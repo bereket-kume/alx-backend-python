@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-    function floor which takes a float 
+    Truncate float to integer
 """
 
 
@@ -10,7 +10,7 @@ def floor(n: float) -> int:
             n: float number
 
         Return:
-            the floor of the float
+            Float number truncated to floor
     """
 
     return int(n)
