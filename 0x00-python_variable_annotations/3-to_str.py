@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """
-    unction to_str that takes a float n as argument 
-    and returns the string representation of the float
+    Conver float to integer
 """
 
 
 def to_str(n: float) -> str:
     """
-    Args:
-        n: is the first paramater in our function
+        Args:
+            n: float number
 
-    return:
-        the string representation of the float.
+        Return:
+            Float of type string
     """
 
     return str(n)
