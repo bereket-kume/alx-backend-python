@@ -7,6 +7,7 @@ from unittest.mock import patch, Mock, MagicMock
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from fixtures import TEST_PAYLOAD
+from requests import HTTPError
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -83,16 +84,20 @@ class TestGithubOrgClient(unittest.TestCase):
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration testing class for GithubOrgClient"""
     @classmethod
-    def setUpClass(cls):
-        """set up mock for request.get"""
-        cls.get_patcher = patch('request.get')
-        cls.mock_get = cls.get_patcher.start()
+    def setUpClass(cls) -> None:
+        """Sets up class fixtures before running tests."""
+        route_payload = {
+            'https://api.github.com/orgs/google': cls.org_payload,
+            'https://api.github.com/orgs/google/repos': cls.repos_payload,
+            }
 
-        def get_json_side_effect(url):
-            if url == cls.org_payload["repos_url"]:
-                return cls.repos_payload
-            return cls.org_payload
-        cls.mock_get.return_value.json.side_effect = get_json_side_effect
+        def get_payload(url):
+            if url in route_payload:
+                return Mock(**{'json.return_value': route_payload[url]})
+            return HTTPError
+
+        cls.get_patcher = patch("requests.get", side_effect=get_payload)
+        cls.get_patcher.start()
 
     @classmethod
     def tearDownClass(cls):
