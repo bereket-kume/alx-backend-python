@@ -96,6 +96,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """remove the class fixture after running all tests"""
         cls.get_patcher.stop()
 
     def test_public_repos(self):
@@ -104,10 +105,9 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         self.assertEqual(client.public_repos(), self.expected_repos)
         self.mock_get.assert_called_with(self.org_payload["repos_url"])
 
-    def test_apache2_repos(self):
-        """Test filtering by Apache 2.0 license"""
-        client = GithubOrgClient("google")
-        self.assertEqual(client.public_repos(
-            license="apache-2.0"), self.test_apache2_repos
+    def test_public_repos_with_license(self):
+        """Tests the public_repos method with a license"""
+        self.assertEqual(
+            GithubOrgClient("google").public_repos(license="apache-2.0"),
+            self.apache2_repos,
         )
-        self.mock_get.assert_called_with(self.org_payload["repos_url"])
